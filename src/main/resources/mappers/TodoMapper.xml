@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssg.todoservicespringmvc.mapper.TodoMapper">
+
+
+<!--    TodoMapper인터페이스에 있는 메서드 이름과 id가 같아야함-->
+    <select id="getTime" resultType="string">
+        select NOW()
+    </select>
+
+
+    <insert id="insert">
+        insert into todo (title,dueDate,writer) values( #{title}, #{dueDate}, #{writer} )
+    </insert>
+
+
+    <select id="selectAll" resultType="com.ssg.todoservicespringmvc.domain.TodoVO">
+        select * from todo order by tno desc
+    </select>
+
+    <select id="selectOne" resultType="com.ssg.todoservicespringmvc.domain.TodoVO">
+        select * from todo where tno = #{tno}
+    </select>
+
+    <update id="update" >
+        update todo set title = #{title}, dueDate = #{dueDate}, finished = #{finished}
+        where tno = #{tno}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM todo
+        WHERE tno = #{tno}
+    </delete>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://mybatis.org/schema/mybatis-spring
+       http://mybatis.org/schema/mybatis-spring.xsd">
+
+    <!--        <bean class="com.ssg.springwebmvc.sample.SampleDAO"></bean>-->
+    <!--        <bean class="com.ssg.springwebmvc.sample.SampleService"></bean>-->
+    <!--        <bean class="com.ssg.springwebmvc.sample.Restaurant"></bean>-->
+    <!--        <bean class="com.ssg.springwebmvc.sample.Chef"></bean>-->
+
+    <!--        이 부분은 패키지명(새 프로젝트 쓸때마다 바꾸기)-->
+    <context:component-scan base-package="com.ssg.todoservicespringmvc"/>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/Member?serverTimezone=Asia/Seoul"/>
+        <property name="username" value="root"/>
+        <property name="password" value="mysql1234!"/>
+
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="cachePrepStmts">true</prop>
+                <prop key="prepStmtCacheSize">250</prop>
+                <prop key="prepStmtCacheSqlLimit">2048</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- @Transactional 활성화 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--                mappers 폴더 밑에 폴더가 있어도 상관없고-->
+        <property name="mapperLocations" value="classpath:/mappers/**/"/>
+    </bean>
+
+    <!--        이 부분은 mapper(새 프로젝트 쓸때마다 바꾸기)-->
+    <mybatis:scan base-package="com.ssg.todoservicespringmvc.mapper"></mybatis:scan>
+
+    <context:component-scan base-package="com.ssg.todoservicespringmvc"></context:component-scan>
+
+</beans>
